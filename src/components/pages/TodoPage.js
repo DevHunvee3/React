@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Paper, IconButton } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import TodoItem from "../common/TodoItem";
 import TodoForm from "../common/TodoForm";
+import provider from "../../servicios/TodoProvider";
 
-let fakeData = [
+const fakeData = [
   {
     userId: 1,
     id: 1,
@@ -45,8 +46,33 @@ let fakeData = [
 
 const TodoPage = () => {
   const [formOpened, setFormOpened] = useState(false);
-  const [data, setData] = useState(fakeData);
+  const [data, setData] = useState([]);
 
+  const refresh = ()=>{
+    provider.all().then((response) => {
+      setData(response);
+    });
+  }
+
+  useEffect(() => {
+    refresh()
+  }, []);
+
+  const handleSubmit = (value) => {
+    setFormOpened(false);
+
+    provider.create({
+      userId: 1,      
+      title: value,
+      completed: false,
+    }).then(response=>{
+      refresh()
+      // setData([
+      //   response,
+      //   ...data
+      // ]);
+    })
+  };
   const handleToggle = (todo) => {
     const newValue = !todo.completed;
     const newData = data.map((_todo) => {
@@ -56,6 +82,19 @@ const TodoPage = () => {
       };
     });
     setData(newData);
+
+    //TAREA HACER UPDATE CON AXIOS Y MODIFICAR ESTA FUNCION
+  };
+  const handleDelete = (todo) => {
+    provider.delete(todo.id).then(() => {
+      //como usamos jsonplaceholder, el borrado no persiste.
+      refresh()
+      // setData(
+      //   data.filter((_todo, i) => {
+      //     return _todo.id !== todo.id;
+      //   })
+      // );
+    });
   };
 
   const handleFormOpened = () => {
@@ -64,10 +103,6 @@ const TodoPage = () => {
   const handleFormClosed = () => {
     setFormOpened(false);
   };
-
-  const handleSubmit = (value) =>{
-    //TAREA: COMO HACER PARA INCLUIR EL VALOR EN EL ARREGLO DATA
-  }
 
   return (
     <Grid container>
@@ -90,7 +125,12 @@ const TodoPage = () => {
               </IconButton>
             </Grid>
             {data.map((todo, index) => (
-              <TodoItem todo={todo} onToggle={() => handleToggle(todo)} />
+              <TodoItem
+                todo={todo}
+                onToggle={() => handleToggle(todo)}
+                onDelete={() => handleDelete(todo)}
+                key={todo.id}
+              />
             ))}
           </Grid>
         </Paper>
@@ -98,5 +138,4 @@ const TodoPage = () => {
     </Grid>
   );
 };
-
 export default TodoPage;
