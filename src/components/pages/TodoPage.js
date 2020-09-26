@@ -131,14 +131,8 @@ const TodoPage = () => {
   };
 
   const handleDelete = (todo) => {
-    provider.delete(todo.id).then(() => {
-      //como usamos jsonplaceholder, el borrado no persiste.
+    provider.delete(todo.id).then(() => {      
       refresh();
-      // setData(
-      //   data.filter((_todo, i) => {
-      //     return _todo.id !== todo.id;
-      //   })
-      // );
     });
   };
 
