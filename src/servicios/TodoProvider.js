@@ -3,10 +3,10 @@ import axios from "axios";
 const provider = {
   all: () => {
     return axios
-      .get("https://jsonplaceholder.typicode.com/todos")
+      .get("http://todo-api.bluebox-soft.com/api/todos")
       .then((response) => {
         return Promise.resolve(
-          response.data.filter((todo) => todo.completed === true)
+          response.data
         );
       })
       .catch((err) => {
@@ -15,18 +15,19 @@ const provider = {
       });
   },
   create: (data) => {
-    return axios.post('https://jsonplaceholder.typicode.com/todos', data)
+    return axios
+      .post("http://todo-api.bluebox-soft.com/api/todos", data)
       .then(function (response) {
-        return Promise.resolve(response.data)
+        return Promise.resolve(response.data);
       })
       .catch(function (err) {
         console.log(err);
-        return Promise.reject(err)
+        return Promise.reject(err);
       });
   },
   get: (id) => {
     return axios
-      .get(`https://jsonplaceholder.typicode.com/todos/${id}`)
+      .get(`http://todo-api.bluebox-soft.com/api/todos/${id}`)
       .then((response) => {
         return Promise.resolve(response.data);
       })
@@ -36,11 +37,19 @@ const provider = {
       });
   },
   update: (id, data) => {
-    //modificar todo con id y data
+    return axios
+      .put("http://todo-api.bluebox-soft.com/api/todos/" + id, data)
+      .then(function (response) {
+        return Promise.resolve(response.data);
+      })
+      .catch(function (err) {
+        console.log({err});
+        return Promise.reject(err);
+      });
   },
   delete: (id) => {
     return axios
-      .delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+      .delete(`http://todo-api.bluebox-soft.com/api/todos/${id}`)
       .then((response) => {
         return Promise.resolve(response.data);
       })

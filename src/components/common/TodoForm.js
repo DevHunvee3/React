@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo} from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -7,7 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-export default function TodoForm({ open, handleClose, handleSubmit }) {
+const TodoForm=({ open, handleClose, handleSubmit })=>{
   const [value, setValue] = useState("");
   useEffect(() => {
     setValue("");
@@ -48,3 +48,4 @@ export default function TodoForm({ open, handleClose, handleSubmit }) {
     </div>
   );
 }
+export default memo(TodoForm);

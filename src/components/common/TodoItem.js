@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import { Grid, Paper, Checkbox, IconButton } from "@material-ui/core";
 import { DeleteForever } from "@material-ui/icons";
 
@@ -27,4 +27,4 @@ export const TodoItem = ({ todo, onToggle, onDelete }) => {
   );
 };
 
-export default TodoItem;
+export default memo(TodoItem);

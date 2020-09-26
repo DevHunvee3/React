@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { Grid, Paper, IconButton } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import TodoItem from "../common/TodoItem";
@@ -44,51 +44,96 @@ const fakeData = [
   },
 ];
 
+const TodoList = memo((props) => (
+  <Grid
+    item
+    xs={12}
+    style={{
+      padding: "5rem 10vw",
+    }}
+  >
+    <Paper
+      style={{
+        padding: "2rem",
+      }}
+    >
+      <Grid container direction="column" spacing={1}>
+        <Grid
+          item
+          style={{
+            alignSelf: "flex-end",
+          }}
+        >
+          <IconButton
+            color="primary"
+            aria-label="add"
+            onClick={props.handleFormOpened}
+          >
+            <AddCircleOutline />
+          </IconButton>
+        </Grid>
+        {props.data.map((todo, index) => (
+          <TodoItem
+            todo={todo}
+            onToggle={() => props.handleUpdate(todo)}
+            onDelete={() => props.handleDelete(todo)}
+            key={todo.id}
+          />
+        ))}
+      </Grid>
+    </Paper>
+  </Grid>
+));
+
 const TodoPage = () => {
   const [formOpened, setFormOpened] = useState(false);
   const [data, setData] = useState([]);
 
-  const refresh = ()=>{
+  const refresh = () => {
     provider.all().then((response) => {
       setData(response);
     });
-  }
+  };
 
   useEffect(() => {
-    refresh()
+    refresh();
   }, []);
 
   const handleSubmit = (value) => {
     setFormOpened(false);
 
-    provider.create({
-      userId: 1,      
-      title: value,
-      completed: false,
-    }).then(response=>{
-      refresh()
-      // setData([
-      //   response,
-      //   ...data
-      // ]);
-    })
+    provider
+      .create({
+        userId: 1,
+        title: value,
+        completed: false,
+      })
+      .then((response) => {
+        refresh();
+        // setData([
+        //   response,
+        //   ...data
+        // ]);
+      });
   };
-  const handleToggle = (todo) => {
-    const newValue = !todo.completed;
-    const newData = data.map((_todo) => {
-      return {
-        ..._todo,
-        completed: _todo.id === todo.id ? newValue : _todo.completed,
-      };
-    });
-    setData(newData);
 
-    //TAREA HACER UPDATE CON AXIOS Y MODIFICAR ESTA FUNCION
+  const handleUpdate = (todo) => {
+    provider
+      .update(todo.id, { ...todo, completed: !todo.completed })
+      .then((response) => {
+        const newData = data.map((_todo) => {
+          return _todo.id === todo.id ? response : _todo;
+        });
+        setData(newData);
+        //refresh()
+      })
+      .catch(() => {});
   };
+
   const handleDelete = (todo) => {
     provider.delete(todo.id).then(() => {
       //como usamos jsonplaceholder, el borrado no persiste.
-      refresh()
+      refresh();
       // setData(
       //   data.filter((_todo, i) => {
       //     return _todo.id !== todo.id;
@@ -112,29 +157,12 @@ const TodoPage = () => {
         handleSubmit={handleSubmit}
       />
 
-      <Grid item xs={12} style={{ padding: "5rem 10vw" }}>
-        <Paper style={{ padding: "2rem" }}>
-          <Grid container direction="column" spacing={1}>
-            <Grid item style={{ alignSelf: "flex-end" }}>
-              <IconButton
-                color="primary"
-                aria-label="add"
-                onClick={handleFormOpened}
-              >
-                <AddCircleOutline />
-              </IconButton>
-            </Grid>
-            {data.map((todo, index) => (
-              <TodoItem
-                todo={todo}
-                onToggle={() => handleToggle(todo)}
-                onDelete={() => handleDelete(todo)}
-                key={todo.id}
-              />
-            ))}
-          </Grid>
-        </Paper>
-      </Grid>
+      <TodoList
+        data={data}
+        handleUpdate={handleUpdate}
+        handleDelete={handleDelete}
+        handleFormOpened={handleFormOpened}
+      ></TodoList>
     </Grid>
   );
 };
