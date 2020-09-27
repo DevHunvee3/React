@@ -1,8 +1,8 @@
 import React, {memo} from "react";
 import { Grid, Paper, Checkbox, IconButton } from "@material-ui/core";
-import { DeleteForever } from "@material-ui/icons";
+import { DeleteForever, Edit } from "@material-ui/icons";
 
-export const TodoItem = ({ todo, onToggle, onDelete }) => {
+export const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
   return (
     <Grid item>
       <Paper elevation={5}>
@@ -16,6 +16,9 @@ export const TodoItem = ({ todo, onToggle, onDelete }) => {
               checked={todo.completed}
               onChange={onToggle}
             />
+            <IconButton aria-label="edit" color="default" onClick={onEdit}>
+              <Edit />
+            </IconButton>
             <IconButton aria-label="delete" color="secondary" onClick={onDelete}>
               <DeleteForever />
             </IconButton>
