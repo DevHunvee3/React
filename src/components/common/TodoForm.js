@@ -7,10 +7,16 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const TodoForm=({ open, handleClose, handleSubmit })=>{
+const TodoForm=({ open, todoToEdit, handleClose, handleSubmit  })=>{
   const [value, setValue] = useState("");
+
   useEffect(() => {
-    setValue("");
+    if(Object.keys(todoToEdit).length === 0 && todoToEdit.constructor === Object){ // dentro del if verifica si el objeto todoToEdit esta vacio
+      setValue("");
+    } else {
+      setValue(todoToEdit.title);
+    }
+    
   }, [open]); //deps [] === componentDidMount
 
   return (
@@ -20,7 +26,9 @@ const TodoForm=({ open, handleClose, handleSubmit })=>{
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">New Todo</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          {Object.keys(todoToEdit).length === 0 && todoToEdit.constructor === Object ? "New Todo" : "Edit Todo"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>Enter a todo text:</DialogContentText>
           <TextField

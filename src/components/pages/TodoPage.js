@@ -77,6 +77,7 @@ const TodoList = memo((props) => (
             todo={todo}
             onToggle={() => props.handleUpdate(todo)}
             onDelete={() => props.handleDelete(todo)}
+            onEdit={() => props.handleEdit(todo)}
             key={todo.id}
           />
         ))}
@@ -88,6 +89,7 @@ const TodoList = memo((props) => (
 const TodoPage = () => {
   const [formOpened, setFormOpened] = useState(false);
   const [data, setData] = useState([]);
+  const [todoToEdit, setTodoToEdit] = useState({})
 
   const refresh = () => {
     provider.all().then((response) => {
@@ -102,30 +104,39 @@ const TodoPage = () => {
   const handleSubmit = (value) => {
     setFormOpened(false);
 
-    provider
-      .create({
-        userId: 1,
-        title: value,
-        completed: false,
+    if(Object.keys(todoToEdit).length === 0 && todoToEdit.constructor === Object){
+      provider
+        .create({
+          userId: 1,
+          title: value,
+          completed: false,
+        })
+        .then((response) => {
+          refresh();
+          // setData([
+          //   response,
+          //   ...data
+          // ]);
+        });
+    } else {
+      console.log('hola')
+      provider
+      .update(todoToEdit.id, {
+        ...todoToEdit,
+        title: value
       })
       .then((response) => {
+        console.log(response)
         refresh();
-        // setData([
-        //   response,
-        //   ...data
-        // ]);
       });
+    }
   };
 
   const handleUpdate = (todo) => {
     provider
       .update(todo.id, { ...todo, completed: !todo.completed })
       .then((response) => {
-        const newData = data.map((_todo) => {
-          return _todo.id === todo.id ? response : _todo;
-        });
-        setData(newData);
-        //refresh()
+        refresh()
       })
       .catch(() => {});
   };
@@ -136,7 +147,13 @@ const TodoPage = () => {
     });
   };
 
+  const handleEdit = (todo) => {
+    setTodoToEdit(todo)
+    setFormOpened(true);
+  }
+
   const handleFormOpened = () => {
+    setTodoToEdit({})
     setFormOpened(true);
   };
   const handleFormClosed = () => {
@@ -147,6 +164,7 @@ const TodoPage = () => {
     <Grid container>
       <TodoForm
         open={formOpened}
+        todoToEdit={todoToEdit}
         handleClose={handleFormClosed}
         handleSubmit={handleSubmit}
       />
@@ -155,6 +173,7 @@ const TodoPage = () => {
         data={data}
         handleUpdate={handleUpdate}
         handleDelete={handleDelete}
+        handleEdit={handleEdit}
         handleFormOpened={handleFormOpened}
       ></TodoList>
     </Grid>
