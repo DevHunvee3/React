@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, IconButton } from "@material-ui/core";
 import MuiTable from "../../components/MuiTable";
 import provider from "../../provider";
 import { useHistory } from "react-router-dom";
+import EditIcon from '@material-ui/icons/Edit';
 
 const columns = [
   {
@@ -20,6 +21,11 @@ const columns = [
     align: "left",
     name: "body",
   },
+  {
+    title: "",
+    align: "center",
+    name: "edit"
+  }
 ];
 // const rows = [
 //   {
@@ -39,6 +45,7 @@ export default function ArticlesAdminPage() {
   const history = useHistory();
 
   const refresh = () => {
+
     provider.allPosts()
     .then((response) => setArticles(response))
     .catch(() => setArticles([{id:1, title:'No se pudo cargar' }]))
@@ -46,6 +53,7 @@ export default function ArticlesAdminPage() {
   
   useEffect(() => {
     refresh()
+
   }, [])
 
 
@@ -57,10 +65,21 @@ export default function ArticlesAdminPage() {
         </Grid>
         <Grid item style={{alignSelf:"end"}}>
             <Button variant="outlined" color="primary" onClick={() => history.push(`/admin/articles/create`) }>Crear</Button>
+            
         </Grid>
         <Grid item>
-          <MuiTable rows={articulos} columns={columns} />
-        </Grid>
+          <MuiTable 
+            rows={articulos.map((articulo) => {
+              return {...articulo, 'edit': (
+              <IconButton 
+                aria-label="Editar" 
+                onClick={ () => history.push(`/admin/articles/edit/` + articulo.id) }>
+                 <EditIcon /> 
+              </IconButton>)} 
+            })} 
+            columns={columns} 
+          />
+        </Grid>      
       </Grid>
     </Grid>
   );
