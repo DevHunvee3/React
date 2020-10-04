@@ -1,14 +1,14 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import routes from "./routes";
+import Navbar from './components/Navbar'
 
 const App = () => {
   return (
     <Router>
       <div className="App">
-        
+        <Navbar />
         <Switch>
           {routes.map((route, index) => (
             <Route

@@ -20,6 +20,10 @@ const routes = [
     component: ArticlesFormPage,
   },
   {
+    path: "/admin/articles/edit/:id",
+    component: ArticlesFormPage,
+  },
+  {
     path: "/articles/:id",    
     component: ArticlePage,
   },
