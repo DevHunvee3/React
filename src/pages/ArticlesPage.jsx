@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Paper } from "@material-ui/core";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import provider from "../provider"
 
 

@@ -36,7 +36,7 @@ export default function ArticlesFormPage() {
       .then((response) => setArticle(response))
       .catch((err) => setArticle({title: 'Error', body: 'No se pudo cargar el articulo :('}) )
     }
-  },[])
+  },[id])
 
   return (
     <Grid container justify="center" alignItems="center">
