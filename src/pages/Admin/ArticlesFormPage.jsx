@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Grid, TextField, Button } from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
+import provider from "../../provider";
 
 const emptyArticle = {
   title: "",
@@ -15,7 +16,9 @@ export default function ArticlesFormPage() {
     setArticle({ ...article, [e.target.name]: e.target.value });
   };
   const handleCreate = ()=>{
-    //mandamos peticion de creacion
+    //mandamos peticion de creaciond
+    provider.appendPost(article)
+    
     history.push("/admin/articles")
   }
   return (

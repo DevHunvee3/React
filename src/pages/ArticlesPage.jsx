@@ -1,20 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Paper } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
+import provider from "../provider"
+
 
 export default function ArticlesPage() {
+  const [articles, setArticles] = useState([])
+
+  const refresh = () => {
+    provider.allPosts()
+    .then((response) => setArticles(response))
+    .catch(() => setArticles([{id:1, title:'No se pudo cargar' }]))
+  }
+  
+  useEffect(() => {
+    refresh()
+  }, [])
+
+
   return (
     <Grid container justify="center" alignItems="center">
       <Grid item container direction="column" xs={6} spacing={2}>
-        <Grid item>
-          <Article article={{ id:1,title: "Item1" }} />
-        </Grid>
-        <Grid item>
-          <Article article={{ id:2, title: "Item2" }} />
-        </Grid>
-        <Grid item>
-          <Article article={{ id:3,title: "Item3" }} />
-        </Grid>
+        {articles.map((article) => {
+          return (
+            <Grid item key={article.id}>
+              <Article article={article} />
+            </Grid>
+          )
+        })}
       </Grid>
     </Grid>
   );
