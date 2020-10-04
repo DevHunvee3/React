@@ -2,7 +2,6 @@ import ArticlesPage from "./pages/ArticlesPage";
 import ArticlesAdminPage from "./pages/Admin/ArticlesAdminPage";
 import ArticlesFormPage from "./pages/Admin/ArticlesFormPage";
 import ArticlePage from "./pages/ArticlePage";
-import ArticlesEditPage from "./pages/Admin/ArticlesEditPage"
 
 const routes = [
   {
@@ -22,7 +21,7 @@ const routes = [
   },
   {
     path: "/admin/articles/edit/:id",
-    component: ArticlesEditPage,
+    component: ArticlesFormPage,
   },
   {
     path: "/articles/:id",    
